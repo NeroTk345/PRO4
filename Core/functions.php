@@ -48,7 +48,9 @@ function view($path, $attributes = [])
 
 function login($user)
 {
+    var_dump($user); // Debugging to check if 'id' is passed to the login function
     $_SESSION['user'] = [
+        'id' => $user['id'],
         'email' => $user['email']
     ];
 

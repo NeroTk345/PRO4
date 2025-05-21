@@ -19,15 +19,27 @@ if (!$form->validate($email, $password)) {
     ]);
 }
 //match the credentials
-$user = $db->query('SELECT * FROM Gebruiker WHERE Gebruikersnaam = :email', [
+$user = $db->query('SELECT id, Gebruikersnaam, Wachtwoord FROM Gebruiker WHERE Gebruikersnaam = :email', [
     'email' => $email
 ])->find();
+
+var_dump($user); // Debugging to check if 'id' is retrieved correctly
 
 if ($user) {
     if (password_verify($password, $user['Wachtwoord'])) {
         login([
+            'id' => $user['id'],
             'email' => $email
         ]);
+
+        $role = $db->query('SELECT Naam FROM rol WHERE Gebruikerid = :id', [
+            'id' => $user['id']
+        ])->find();
+        if ($role) {
+            $_SESSION['user']['role'] = $role['Naam'];
+        } else {
+            $_SESSION['user']['role'] = 'Geen rol gevonden';
+        }
 
         header('location: /');
         exit();

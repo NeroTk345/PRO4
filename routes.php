@@ -22,6 +22,6 @@ $router->get('/login', 'sessions/create.php')->only('guest');
 $router->post('/sessions', 'sessions/store.php')->only('guest');
 $router->get('/logout', 'sessions/logout.php');
 
-$router->get('/Account', 'Account/Account.php')->only('auth');
+$router->get('/Account', 'Account/AccountController.php')->only('auth');
 
 
