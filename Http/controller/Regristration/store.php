@@ -9,7 +9,7 @@ $achternaam = $_POST['achternaam'] ?? '';
 $email = $_POST['email'];
 $password = $_POST['password'];
 
-//validate the form inputs
+
 $errors = [];
     if (!Validator::string($voornaam, 2, 50)) {
         $errors['voornaam'] = 'Graag een geldige voornaam invullen';
@@ -31,16 +31,16 @@ $errors = [];
     }
 
     $db = App::resolve(Database::class);
-//check if the account already exists
+
 $user = $db->query('SELECT * FROM Gebruiker WHERE Gebruikersnaam = :email', [
     'email' => $email
 ])->find();
-    //if yes, redirect to a login page.
+
     if ($user) {
         header('location: /');
         exit();
     }
-    //if not, save one to the database, en log de gebruiker in en redirect
+
 try {
     $db->query('INSERT INTO Gebruiker (Voornaam, Achternaam, Gebruikersnaam, Wachtwoord, IsIngelogd, Isactief, Datumaangemaakt, Datumgewijzigd) VALUES (:voornaam, :achternaam, :gebruikersnaam, :wachtwoord, 1, 1, NOW(), NOW())', [
         'voornaam' => $voornaam,
@@ -56,6 +56,7 @@ try {
     $user = $db->query('SELECT * FROM Gebruiker WHERE Gebruikersnaam = :email', [
         'email' => $email
     ])->find();
+    
 
     header('location: /login');
     exit();
