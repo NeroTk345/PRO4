@@ -6,7 +6,6 @@ use Core\Database;
 $db = App::resolve(Database::class);
 
 
-var_dump($_SESSION['user']); // Debugging to check if 'id' is set in the session
 
 $errors = [];
 if (!Validator::string($_POST['body'], 1, 1000)) {
