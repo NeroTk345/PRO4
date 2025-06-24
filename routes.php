@@ -14,6 +14,7 @@ $router->patch('/note', 'notes/update.php');
 
 $router->get('/note/create', 'notes/create.php');
 $router->post('/notes', 'notes/store.php');
+$router->post('/notes/respond', 'notes/respond.php');
 
 $router->get('/register', 'Regristration/create.php')->only('guest');
 $router->post('/register', 'Regristration/store.php');

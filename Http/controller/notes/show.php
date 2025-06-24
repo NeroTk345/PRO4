@@ -6,13 +6,19 @@ $db = App::resolve(Database::class);
 
 $currentUserId = 1;
 
-    $note = $db->query('select * from notes where id = :id', [
-        'id' => $_GET['id']
-    ])->findOrFail();
+    if (!isset($_GET['id'])) {
+    // Geen id meegegeven, terug naar overzicht
+    header('Location: /notes');
+    exit();
+}
 
-    authorize($note['user_id'] === $currentUserId);
+$note = $db->query('select * from melding where id = :id', [
+    'id' => $_GET['id']
+])->findOrFail();
 
-    view("notes/show.view.php", [
-        'heading' => 'Note',
-        'note' => $note
-    ]);
+authorize($note['GebruikerId'] === $currentUserId);
+
+view("notes/show.view.php", [
+    'heading' => 'Note',
+    'note' => $note
+]);

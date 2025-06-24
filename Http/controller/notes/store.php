@@ -19,9 +19,22 @@ if (isset($_POST['gebruiker_id']) && isset($_POST['melding_id']) && isset($_POST
 
     $inhoud = $_POST['inhoud'];
 
-    $db->query('INSERT INTO reactie (gebruiker_id, melding_id, inhoud) VALUES (:gebruiker_id, :melding_id, :inhoud)', [
+    // Debug: controleer of de melding bestaat en haal de juiste Id op
+    $melding = $db->query('SELECT Id FROM melding WHERE Id = :id OR Nummer = :nummer', [
+        'id' => $meldingId,
+        'nummer' => $meldingId
+    ])->find();
+    
+    if (!$melding) {
+        die("Melding niet gevonden voor ID/Nummer: " . $meldingId);
+    }
+    
+    // Gebruik de Id uit de database (niet het Nummer)
+    $correctMeldingId = $melding['Id'];
+
+    $db->query('INSERT INTO reactie (gebruiker_id, melding_id, inhoud, datum_tijd) VALUES (:gebruiker_id, :melding_id, :inhoud, NOW())', [
         'gebruiker_id' => $gebruikerId,
-        'melding_id' => $meldingId,
+        'melding_id' => $correctMeldingId,
         'inhoud' => $inhoud,
     ]);
     header('Location: /notes');
@@ -54,6 +67,23 @@ if (!empty($errors)) {
     return view("index.view.php", [
         'heading' => 'Create Note',
         'errors' => $errors,
+    ]);
+}
+
+// Controleer op dubbele melding voor deze gebruiker
+$duplicate = $db->query('SELECT * FROM melding WHERE Bericht = :Bericht AND GebruikerId = :GebruikerId AND Voorstelling = :Voorstelling AND Datum = :Datum AND Tijd = :Tijd', [
+    'Bericht' => $bericht,
+    'GebruikerId' => $gebruikerId,
+    'Voorstelling' => $voorstelling,
+    'Datum' => $datum,
+    'Tijd' => $tijd,
+])->find();
+
+if ($duplicate) {
+    $errors['duplicate'] = 'Melding bestaat al';
+    return view("notes/create.view.php", [
+        'errors' => $errors,
+        'voorstellingen' => $voorstellingen ?? [],
     ]);
 }
 
