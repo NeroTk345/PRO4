@@ -22,7 +22,7 @@ if (isset($_POST['remove_from_cart'])) {
 
 <?php require_once base_path("views/partials/nav.php") ?>
 
-<?php var_dump($_SESSION)?>
+<!-- <?php var_dump($_SESSION)?> -->
 <!-- Header Section -->
 <header id="home">
     <div class="header-content">
